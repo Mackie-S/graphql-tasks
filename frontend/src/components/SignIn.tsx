@@ -1,50 +1,49 @@
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { SignInResponse } from '../types/signinResponse';
-import { SIGN_IN } from '../mutations/authMutations';
-import { useNavigate } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import CssBaseline from '@mui/material/CssBaseline'
+import TextField from '@mui/material/TextField'
+import Link from '@mui/material/Link'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { SignInResponse } from '../types/signinResponse'
+import { SIGN_IN } from '../mutations/authMutations'
+import { useNavigate } from 'react-router-dom'
 
-
-const theme = createTheme();
+const theme = createTheme()
 
 export default function SignIn() {
-  const [email, setEmail] =useState('')
-  const [password, setPassword] =useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [signin] = useMutation<SignInResponse>(SIGN_IN)
-  const [failSignIn,setFailSignIn] = useState(false)
-const navigate = useNavigate()
+  const [failSignIn, setFailSignIn] = useState(false)
+  const navigate = useNavigate()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const signInInput = {email,password}
-    try{
+    event.preventDefault()
+    const signInInput = { email, password }
+    try {
       const result = await signin({
-        variables:{signInInput}
+        variables: { signInInput }
       })
-      if(result.data){
-        localStorage.setItem('token',result.data.signIn.accessToken)
+      if (result.data) {
+        localStorage.setItem('token', result.data.signIn.accessToken)
       }
       localStorage.getItem('token') && navigate('/')
-    }catch(error:any){
-      if(error.message === 'Unauthorized'){
+    } catch (error: any) {
+      if (error.message === 'Unauthorized') {
         setFailSignIn(true)
         return
       }
       console.log(error)
       alert('予期しないエラーが発生しました')
     }
-  };
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -55,7 +54,7 @@ const navigate = useNavigate()
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -75,7 +74,9 @@ const navigate = useNavigate()
               autoComplete="email"
               autoFocus
               value={email}
-              onChange={(e)=>{setEmail(e.target.value)}}
+              onChange={e => {
+                setEmail(e.target.value)
+              }}
             />
             <TextField
               margin="normal"
@@ -87,15 +88,12 @@ const navigate = useNavigate()
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e)=>{setPassword(e.target.value)}}
+              onChange={e => {
+                setPassword(e.target.value)
+              }}
             />
-            {failSignIn && <Typography color='red'>メールアドレスまたはパスワードが不正です。</Typography>}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            {failSignIn && <Typography color="red">メールアドレスまたはパスワードが不正です。</Typography>}
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
             <Grid container>
@@ -109,5 +107,5 @@ const navigate = useNavigate()
         </Box>
       </Container>
     </ThemeProvider>
-  );
+  )
 }
